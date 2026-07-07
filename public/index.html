@@ -3,89 +3,123 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gerador de Copy IA</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <style>
-        body { background-color: #f5f5f5; }
-        .container { margin-top: 50px; max-width: 600px !important; }
-        #output { background: white; padding: 20px; border-radius: 10px; white-space: pre-wrap; display: none; margin-top: 20px; border: 1px solid #ddd; }
-        .loader { display: none; }
-    </style>
+    <title>Gerador de Copy para Afiliados IA</title>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Gere copys de vendas altamente persuasivas para seus links de afiliado com Inteligência Artificial em segundos.">
+    <meta name="theme-color" content="#121214">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://unpkg.com/lucide@latest/style.css" rel="stylesheet">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="container">
-        <div class="card p-4">
-            <div class="card-content">
-                <span class="card-title center"><b>Gerador de Copy para Afiliados</b></span>
-                <div class="input-field">
-                    <input type="text" id="url" placeholder="Cole o link do produto">
-                </div>
-                <div class="input-field">
-                    <input type="text" id="cupom" placeholder="Cupom (opcional)">
-                </div>
-                <div class="input-field">
-                    <select id="style">
-                        <option value="WhatsApp">WhatsApp / Grupos</option>
-                        <option value="Instagram">Instagram / Story</option>
-                        <option value="Urgência">🔥 Urgência Total</option>
-                        <option value="Engraçado">😂 Humor/Descontraído</option>
-                    </select>
-                </div>
-                <button class="btn waves-effect blue darken-2 w-100" style="width: 100%;" id="btn">Gerar Copy</button>
-                
-                <div class="progress loader" id="loader"><div class="indeterminate"></div></div>
-
-                <div id="output"></div>
-                
-                <div id="actions" style="display: none; margin-top: 15px;" class="center">
-                    <button class="btn green" onclick="copyText()">Copiar Texto</button>
-                </div>
-            </div>
-        </div>
+    
+    <div class="background-effects">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', () => M.FormSelect.init(document.querySelectorAll('select')));
+    <main class="app-container">
+        <header class="header">
+            <div class="logo">
+                <i data-lucide="zap" class="icon-brand"></i>
+                <h1>Copy Ninja <span>AI</span></h1>
+            </div>
+            <p class="subtitle">Gere textos persuasivos de alta conversão em segundos</p>
+        </header>
 
-        const btn = document.getElementById('btn');
-        const output = document.getElementById('output');
-        const loader = document.getElementById('loader');
+        <section class="glass-panel form-section">
+            <form id="generator-form">
+                <div class="input-group">
+                    <label for="url">Link do Produto (Afiliado)</label>
+                    <div class="input-wrapper">
+                        <i data-lucide="link" class="input-icon"></i>
+                        <input type="url" id="url" placeholder="Ex: https://shopee.com.br/produto..." required autocomplete="off">
+                    </div>
+                </div>
 
-        btn.onclick = async () => {
-            const url = document.getElementById('url').value;
-            const cupom = document.getElementById('cupom').value;
-            const style = document.getElementById('style').value;
+                <div class="input-row">
+                    <div class="input-group">
+                        <label for="cupom">Cupom (Opcional)</label>
+                        <div class="input-wrapper">
+                            <i data-lucide="ticket" class="input-icon"></i>
+                            <input type="text" id="cupom" placeholder="Ex: PROMO20" autocomplete="off">
+                        </div>
+                    </div>
 
-            if(!url) return alert("Cole um link!");
+                    <div class="input-group">
+                        <label for="style">Plataforma / Estilo</label>
+                        <div class="input-wrapper select-wrapper">
+                            <i data-lucide="smartphone" class="input-icon"></i>
+                            <select id="style" required>
+                                <option value="WhatsApp">WhatsApp (Grupos/Contatos)</option>
+                                <option value="Instagram">Instagram (Stories/Feed)</option>
+                                <option value="Urgência">🔥 Urgência (Promoção Relâmpago)</option>
+                                <option value="Engraçado">😂 Humor (Descontraído)</option>
+                            </select>
+                            <i data-lucide="chevron-down" class="select-icon"></i>
+                        </div>
+                    </div>
+                </div>
 
-            btn.disabled = true;
-            loader.style.display = 'block';
-            output.style.display = 'none';
+                <button type="submit" class="btn-primary" id="btn-generate">
+                    <i data-lucide="sparkles"></i>
+                    <span>Gerar Copy Mágica</span>
+                </button>
+            </form>
+        </section>
 
-            try {
-                const res = await fetch('/api/generate', {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({ url, cupom, style })
-                });
-                const data = await res.json();
-                output.innerText = data.copy;
-                output.style.display = 'block';
-                document.getElementById('actions').style.display = 'block';
-            } catch (e) {
-                alert("Erro ao gerar copy.");
-            } finally {
-                btn.disabled = false;
-                loader.style.display = 'none';
-            }
-        };
+        <!-- Loading State -->
+        <div class="loading-state" id="loading-state" style="display: none;">
+            <div class="spinner"></div>
+            <p>A IA está analisando a oferta e criando a copy...</p>
+        </div>
 
-        function copyText() {
-            navigator.clipboard.writeText(output.innerText);
-            M.toast({html: 'Copiado!'});
-        }
-    </script>
+        <!-- Result Section -->
+        <section class="result-section" id="result-section" style="display: none;">
+            
+            <div class="preview-card glass-panel">
+                <div class="preview-image-container">
+                    <img src="" alt="Imagem do Produto" id="product-image">
+                    <div class="price-badge" id="product-price">R$ 0,00</div>
+                </div>
+                <div class="preview-info">
+                    <h2 id="product-title">Título do Produto</h2>
+                    <p id="product-store" class="store-name">Loja</p>
+                </div>
+            </div>
+
+            <div class="copy-card glass-panel">
+                <div class="copy-header">
+                    <h3>Sua Copy Vencedora</h3>
+                    <div class="actions">
+                        <button class="btn-icon" id="btn-copy" title="Copiar Texto">
+                            <i data-lucide="copy"></i> Copiar
+                        </button>
+                        <button class="btn-icon outline" id="btn-new" title="Gerar Nova">
+                            <i data-lucide="rotate-ccw"></i> Nova
+                        </button>
+                    </div>
+                </div>
+                <div class="copy-content" id="copy-output">
+                    <!-- Texto gerado entra aqui -->
+                </div>
+            </div>
+
+        </section>
+    </main>
+
+    <!-- Toast Notifications -->
+    <div id="toast" class="toast">Mensagem copiada com sucesso!</div>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="script.js"></script>
 </body>
 </html>
