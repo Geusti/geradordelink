@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const resultSection = document.getElementById('result-section');
     const btnCopy = document.getElementById('btn-copy');
     const btnNew = document.getElementById('btn-new');
+    const btnShare = document.getElementById('btn-share');
     const toast = document.getElementById('toast');
 
     // Elementos de Preview
@@ -97,6 +98,28 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error('Falha ao copiar:', err);
             alert('Não foi possível copiar o texto automaticamente.');
         });
+    });
+
+    // Compartilhar via Web Share API
+    btnShare.addEventListener('click', async () => {
+        const textToShare = copyOutput.textContent;
+        const titleToShare = productTitle.textContent;
+        
+        if (navigator.share) {
+            try {
+                await navigator.share({
+                    title: titleToShare,
+                    text: textToShare
+                });
+                showToast("Opções de compartilhamento abertas!");
+            } catch (err) {
+                if (err.name !== 'AbortError') {
+                    console.error('Erro ao compartilhar:', err);
+                }
+            }
+        } else {
+            alert("Seu navegador não suporta compartilhamento direto. Use o botão Copiar!");
+        }
     });
 
     // Resetar para gerar nova copy
